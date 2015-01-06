@@ -142,4 +142,28 @@ $string['collapse_all_groupings'] = 'Réduire tous les groupements';
 $string['double_click_grouping_legend'] = 'Double-clic sur groupement pour le développer/réduire.';
 $string['double_click_group_legend'] = 'Double-clic sur groupe pour l’ajouter.';
 
+// GroupManagement Add-in
 
+$string['enrollementKeyForgroupmanagement'] = "Clé d'inscription pour le groupe";
+$string['requestEnrollementKeyFrom'] = "Demander la clé d'inscription à";
+$string['incorrectEnrollementKey'] = "Clé d'inscription incorrecte";
+$string['creategroup'] = 'Créer un groupe';
+$string['groupselectionlocked'] = "Le groupe sélectionnée a été vérouillé manuellement"
+$string['groupselectionlockedon'] = 'La séléction des groupes a été vérouillée';
+$string['videopresentation'] = 'Vidéo de présentation';
+$string['private'] = 'Privé';
+$string['privategroup'] = 'Groupe privé';
+$string['groupcreator'] = 'Créateur du groupe';
+$string['contact'] = 'Contact';
+$string['freezegroups'] = 'Geler les groupes';
+$string['freezegroupsaftertime'] = 'Geler les groupes à partir de';
+$string['groupsfrozen'] = 'Les groupes ont été gelés';
+$string['groupsfrozenaftertime'] = 'Les groupes sont gelés depuis';
+$string['displaygrouppicture'] = "Afficher l'image du groupe";
+$string['displaygroupvideo'] = "Afficher la vidéo du groupe";
+$string['groupcreationpossible'] = "Autoriser la création de groupes par les étudiants";
+$string['privategroupspossible'] = "Autoriser les groupes privés";
+$string['limitmaxgroups'] = "Limiter le nombre de groupe";
+$string['maxgroups'] = "Limite de groupes";
+$string['groupvideo'] = 'Vidéo YouTube';
+$string['groupenrollementkey'] = "Clé d'inscription au groupe";

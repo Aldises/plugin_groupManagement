@@ -135,12 +135,14 @@ $string['available_groups'] = 'Available Groups';
 $string['selected_groups'] = 'Selected Groups';
 $string['char_bullet_collapsed'] = '►';
 $string['char_bullet_expanded'] = '▼';
-$string['char_limitui_parenthesis_start'] = '⦗';
-$string['char_limitui_parenthesis_end'] = '⦘';
+$string['char_limitui_parenthesis_start'] = '(';
+$string['char_limitui_parenthesis_end'] = ')';
 $string['expand_all_groupings'] = 'Expand All Groupings';
 $string['collapse_all_groupings'] = 'Collapse All Groupings';
 $string['double_click_grouping_legend'] = 'Double click on a grouping to expand/collapse individually.';
 $string['double_click_group_legend'] = 'Double click on a group to add it.';
+
+// GroupManagement Add-in
 
 $string['enrollementKeyForgroupmanagement'] = 'Enrollement key for the group';
 $string['requestEnrollementKeyFrom'] = 'Request the enrollement key from';
