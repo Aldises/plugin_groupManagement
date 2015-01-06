@@ -1,6 +1,6 @@
 General information
 ====================
-
+coucou
 This module allows students to enrol themselves in a group within a course. The teacher can choose from which groups the students can chose, and the maximum nummber of students allowed in each group.
 
 The students can view the members of each group before making a choise, and (if the teacher allows it) change their selected group until the deadline.
