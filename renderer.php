@@ -170,7 +170,7 @@ class mod_groupmanagement_renderer extends plugin_renderer_base {
 
             if($groupmanagement->displaygroupvideo == 1) {
                 if(isset($option->groupvideo)) {
-                    $videoEmbed = '<iframe width="320" height="180" src="https://www.youtube.com/embed/'.$option->groupvideo.'?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
+                    $videoEmbed = $option->groupvideo ; // Create and add iframe
                     $labeltext .= html_writer::tag('div', $videoEmbed, array('class' => 'groupmanagements-descriptions hidden'));
                 }
             }

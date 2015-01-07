@@ -166,5 +166,5 @@ $string['groupcreationpossible'] = "Autoriser la création de groupes par les é
 $string['privategroupspossible'] = "Autoriser les groupes privés";
 $string['limitmaxgroups'] = "Limiter le nombre de groupe";
 $string['maxgroups'] = "Limite de groupes";
-$string['groupvideo'] = 'Vidéo YouTube';
+$string['groupvideo'] = 'Iframe Vidéo';
 $string['groupenrollementkey'] = "Clé d'inscription au groupe";

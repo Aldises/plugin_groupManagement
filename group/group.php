@@ -111,7 +111,7 @@ if (!empty($group->id)) {
 
 if (isset($id) && $option = $DB->get_record("groupmanagement_options", array("groupid"=>$id))) {
     if (!empty($option->groupvideo)) {
-        $group->groupvideo = 'https://www.youtube.com/watch?v='.$option->groupvideo;
+        $group->groupvideo = 'https://www.youtube.com/watch?v='.$option->groupvideo; // If a video exist add the url to the field
     } else {
         $group->groupvideo = null;
     }
@@ -137,12 +137,9 @@ if ($editform->is_cancelled()) {
         $option->timemodified = time();
         $option->groupvideo = null;
         if (isset($data->groupvideo) && !empty($data->groupvideo)) {
-            $url = $data->groupvideo;
-            parse_str(parse_url($url, PHP_URL_QUERY), $params);
 
-            if (isset($params['v']) && !empty($params['v'])) {
-                $option->groupvideo = $params['v'];
-            }
+            $url = $data->groupvideo;
+            $option->groupvideo = $url ;
         }
 
         $option->enrollementkey = null;
@@ -179,11 +176,7 @@ if ($editform->is_cancelled()) {
 
         if (isset($data->groupvideo) && !empty($data->groupvideo)) {
             $url = $data->groupvideo;
-            parse_str(parse_url($url, PHP_URL_QUERY), $params);
-
-            if (isset($params['v']) && !empty($params['v'])) {
-                $option->groupvideo = $params['v'];
-            }
+            $option->groupvideo = $url ;
         }
 
         if (isset($data->enrollementkey) && !empty($data->enrollementkey)) {

@@ -65,9 +65,9 @@ class group_form extends moodleform {
             $groupVideoType = 'text';
         }
 
-        $attributes = array('placeholder' => 'http://', 'maxlength' => '254', 'size' => '100');
-        $mform->addElement($groupVideoType, 'groupvideo', get_string('groupvideo', 'groupmanagement'), $attributes, get_string('groupvideo', 'groupmanagement'));
-        $mform->setType('groupvideo', PARAM_URL);
+        $attributes = array('placeholder' => '<iframe', 'maxlength' => '254', 'size' => '100'); // masque du champ
+        $mform->addElement($groupVideoType, 'groupvideo', get_string('groupvideo', 'groupmanagement'), $attributes, get_string('groupvideo', 'groupmanagement')); // Ajout champ
+        $mform->setType('groupvideo', PARAM_RAW); // type du champ
     
         $groupEnrollementKeyType = 'hidden';
         if (!empty($groupmanagement) && $groupmanagement->privategroupspossible == 1) {
