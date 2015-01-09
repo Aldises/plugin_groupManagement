@@ -111,7 +111,7 @@ if (!empty($group->id)) {
 
 if (isset($id) && $option = $DB->get_record("groupmanagement_options", array("groupid"=>$id))) {
     if (!empty($option->groupvideo)) {
-        $group->groupvideo = 'https://www.youtube.com/watch?v='.$option->groupvideo; // If a video exist add the url to the field
+        $group->groupvideo = $option->groupvideo; // If a video exist add the url to the field
     } else {
         $group->groupvideo = null;
     }
