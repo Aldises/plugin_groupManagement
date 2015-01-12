@@ -175,7 +175,7 @@ function groupmanagement_user_complete($course, $user, $mod, $groupmanagement) {
  * @return int
  */
 function groupmanagement_add_instance($groupmanagement) {
-    global $DB;
+    global $DB, $USER;
 
     $groupmanagement->timemodified = time();
 
@@ -198,6 +198,8 @@ function groupmanagement_add_instance($groupmanagement) {
             $option = new stdClass();
             $option->groupid = $groupID;
             $option->groupmanagementid = $groupmanagement->id;
+            $option->creatorid = $USER->id ;
+
             $property = 'group_' . $groupID . '_limit';
             if (isset($groupmanagement->$property)) {
             	$option->maxanswers = $groupmanagement->$property;

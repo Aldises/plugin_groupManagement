@@ -53,6 +53,8 @@ class mod_groupmanagement_mod_form extends moodleform_mod {
 		$groups = array();
 		$db_groups = $DB->get_records('groups', array('courseid' => $COURSE->id));
 
+        // Création des deux groupes par default
+        // On ne gère par le créateur ici
 		$groupsToCreate = 2 - count($db_groups);
 		while ($groupsToCreate > 0) {
 			$data = new stdClass();
