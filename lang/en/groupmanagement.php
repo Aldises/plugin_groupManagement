@@ -165,5 +165,5 @@ $string['groupcreationpossible'] = 'Allow group creation by students';
 $string['privategroupspossible'] = 'Allow private groups';
 $string['limitmaxgroups'] = 'Limit the number of groups';
 $string['maxgroups'] = 'Group limitation';
-$string['groupvideo'] = 'YouTube video';
+$string['groupvideo'] = 'Iframe video';
 $string['groupenrollementkey'] = 'Group enrollement key';
