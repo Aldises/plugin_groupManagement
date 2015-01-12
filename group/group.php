@@ -170,7 +170,7 @@ if ($editform->is_cancelled()) {
 
         if ($groupmanagement = $DB->get_record("groupmanagement", array("id" => $cgid))) {
             if (isset($groupmanagement->maxusersingroups)) {
-                $option->maxusersingroups = $groupmanagement->maxusersingroups;
+               $option->maxanswers = $groupmanagement->maxusersingroups;
             }
         }
 
