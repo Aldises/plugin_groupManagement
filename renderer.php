@@ -301,7 +301,7 @@ class mod_groupmanagement_renderer extends plugin_renderer_base {
         } else {
             $html .= html_writer::tag('div', get_string('havetologin', 'groupmanagement'));
         }
-        
+        // Check if can create group
         if ($groupmanagement->groupcreationpossible == 1) {    
             if ($groupmanagement->freezegroups == 0 && (empty($groupmanagement->freezegroupsaftertime) || time() < $groupmanagement->freezegroupsaftertime)) {
                 if ($groupmanagement->limitmaxgroups == 0 || count($options['options']) < $groupmanagement->maxgroups) {
@@ -310,6 +310,18 @@ class mod_groupmanagement_renderer extends plugin_renderer_base {
                 }
             }
         }
+        else {
+    // If not, check if is a teacher, non editing teacher or admin and let create group
+            if (has_capability('mod/groupmanagement:managegroups',$context)) {
+                if ($groupmanagement->freezegroups == 0 && (empty($groupmanagement->freezegroupsaftertime) || time() < $groupmanagement->freezegroupsaftertime)) {
+                    if ($groupmanagement->limitmaxgroups == 0 || count($options['options']) < $groupmanagement->maxgroups) {
+                        $url = new moodle_url('/mod/groupmanagement/group/group.php', array('cgid'=>$groupmanagement->id, 'cmid'=>$coursemoduleid, 'courseid'=>$course->id));
+                        $html .= '<br/>'.html_writer::empty_tag('input', array('type'=>'button', 'value'=>get_string('creategroup','groupmanagement'), 'class'=>'button', 'onclick'=>'window.location="'.html_entity_decode($url).'"'));
+                    }
+                }
+            }
+        }
+
 
         $html .= html_writer::end_tag('form');
 

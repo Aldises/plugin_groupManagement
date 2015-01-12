@@ -86,6 +86,7 @@ $capabilities = array(
         )
     ),
 
+
     'mod/groupmanagement:managegroups' => array(
 
         'captype' => 'write',
