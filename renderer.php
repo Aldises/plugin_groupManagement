@@ -141,7 +141,7 @@ class mod_groupmanagement_renderer extends plugin_renderer_base {
             $group_title = "";
 
             if($groupmanagement->displaygrouppicture == 1) {
-                $group_title .= print_group_picture($group, $course->id, false, true).' ';
+                $group_title .= print_group_picture($group, $course->id, false, true).' '; // Affichage de l'image du groupe !
             }
 
             $group_title .= '<b>'.$group->name.'</b>';
@@ -293,9 +293,9 @@ class mod_groupmanagement_renderer extends plugin_renderer_base {
             if (!empty($options['allowupdate']) && ($options['allowupdate']) && !($multipleenrollmentspossible == 1)) {
                 if ($groupmanagement->freezegroups == 0 && (empty($groupmanagement->freezegroupsaftertime) || time() < $groupmanagement->freezegroupsaftertime)) {
                     $url = new moodle_url('view.php', array('id'=>$coursemoduleid, 'action'=>'delgroupmanagement', 'sesskey'=>sesskey()));
-                   // $html .= ' ' . html_writer::link($url, get_string('removemygroupmanagement','groupmanagement')).'<br />';
+
                     $html .= ' '.html_writer::empty_tag('input', array('type'=>'button', 'value'=>get_string('removemygroupmanagement','groupmanagement'), 'class'=>'button', 'onclick'=>'window.location="'.html_entity_decode($url).'"'));
- //                   $html .= html_writer::empty_tag('a', array('href'=>$url, 'class'=>'button', 'style' => $initiallyHideSubmitButton?'display: none':''),get_string('removemygroupmanagement','groupmanagement'));
+
                 }
             }
         } else {
