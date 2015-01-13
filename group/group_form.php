@@ -68,14 +68,15 @@ class group_form extends moodleform {
         $attributes = array('placeholder' => '<iframe', 'maxlength' => '500', 'size' => '100'); // masque du champ
         $mform->addElement($groupVideoType, 'groupvideo', get_string('groupvideo', 'groupmanagement'), $attributes, get_string('groupvideo', 'groupmanagement')); // Ajout champ
         $mform->setType('groupvideo', PARAM_RAW); // type du champ
-    
-        $groupEnrollementKeyType = 'hidden';
+
         if (!empty($groupmanagement) && $groupmanagement->privategroupspossible == 1) {
-            $groupEnrollementKeyType = 'passwordunmask';
+            $mform->addElement('passwordunmask', 'enrollementkey', get_string('groupenrollementkey', 'groupmanagement'), 'maxlength="254" size="24"');
+            $mform->setType('enrollementkey', PARAM_RAW);
+        }else {
+            $mform->addElement('hidden', '', get_string('groupenrollementkey', 'groupmanagement'), 'maxlength="254" size="24"');
+            $mform->setType('enrollementkey', PARAM_RAW);
         }
 
-        $mform->addElement($groupEnrollementKeyType, 'enrollementkey', get_string('groupenrollementkey', 'groupmanagement'), 'maxlength="254" size="24"', get_string('groupenrollementkey', 'groupmanagement'));
-        $mform->setType('enrollementkey', PARAM_RAW);
 
         $mform->addElement('hidden','cgid', $cgid);
         $mform->setType('cgid', PARAM_INT);
