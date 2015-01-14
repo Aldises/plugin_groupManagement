@@ -138,7 +138,12 @@ if ($editform->is_cancelled()) {
         $option->groupvideo = null;
         if (isset($data->groupvideo) && !empty($data->groupvideo)) {
 
+
+
             $url = $data->groupvideo;
+
+            $url = iframe_clean($url) ; // in lib.php
+
             $option->groupvideo = $url ;
         }
 
@@ -175,7 +180,12 @@ if ($editform->is_cancelled()) {
         }
 
         if (isset($data->groupvideo) && !empty($data->groupvideo)) {
+
+
             $url = $data->groupvideo;
+
+            $url = iframe_clean($url) ; // in lib.php
+
             $option->groupvideo = $url ;
         }
 

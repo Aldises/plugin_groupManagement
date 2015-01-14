@@ -381,6 +381,25 @@ function groupmanagement_prepare_options($groupmanagement, $user, $coursemodule,
 }
 
 /**
+ * @param $url
+ * @return mixed|string
+ * Method that clean the iframe from the user to keep only needed part
+ */
+function iframe_clean($url) {
+
+    $url = strip_tags($url,"<iframe>");  // interpret and keep only iframe tags
+
+    $url = strstr($url, '<iframe'); // Delete everything before iframe
+    $length = strpos($url, "iframe>")+7 ;
+    $url = substr($url, 0, $length); // Delete everything after iframe
+    if($url == "0"){ // Check if no balise iframe
+        $url = "" ;
+    }
+    return $url ;
+
+}
+
+/**
  * @global object
  * @param int $formanswer
  * @param object $groupmanagement
