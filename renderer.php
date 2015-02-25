@@ -54,13 +54,15 @@ class mod_groupmanagement_renderer extends plugin_renderer_base {
         $html .= html_writer::tag('th', get_string('choice', 'groupmanagement'));
 
         $group = get_string('group');
+
         $group .= html_writer::tag('a', get_string('showdescription', 'groupmanagement'), array('class' => 'groupmanagement-descriptiondisplay groupmanagement-descriptionshow', 'href' => '#'));
         $group .= html_writer::tag('a', get_string('hidedescription', 'groupmanagement'), array('class' => 'groupmanagement-descriptiondisplay groupmanagement-descriptionhide hidden', 'href' => '#'));
         $html .= html_writer::tag('th', $group);
 
+
         if ( $showresults == GROUPMANAGEMENT_SHOWRESULTS_ALWAYS or
-        ($showresults == GROUPMANAGEMENT_SHOWRESULTS_AFTER_ANSWER and $current) or
-        ($showresults == GROUPMANAGEMENT_SHOWRESULTS_AFTER_CLOSE and !$groupmanagementopen)) {
+            ($showresults == GROUPMANAGEMENT_SHOWRESULTS_AFTER_ANSWER and $current) or
+            ($showresults == GROUPMANAGEMENT_SHOWRESULTS_AFTER_CLOSE and !$groupmanagementopen)) {
             if ($limitmaxusersingroups) {
                 $html .= html_writer::tag('th', get_string('members/max', 'groupmanagement'));
             } else {
@@ -99,202 +101,216 @@ class mod_groupmanagement_renderer extends plugin_renderer_base {
         }
 
         foreach ($options['options'] as $option) {
-            $group = (isset($groupmanagement_groups[$option->groupid])) ? ($groupmanagement_groups[$option->groupid]) : (false);
-            if (!$group) {
-                $colspan = 2;
-                if ( $showresults == GROUPMANAGEMENT_SHOWRESULTS_ALWAYS or ($showresults == GROUPMANAGEMENT_SHOWRESULTS_AFTER_ANSWER and $current) or ($showresults == GROUPMANAGEMENT_SHOWRESULTS_AFTER_CLOSE and !$groupmanagementopen)) {
-                    $colspan++;
-                    if ($publish == GROUPMANAGEMENT_PUBLISH_NAMES) {
-                        $colspan++;
-                    }
-                }
-                $cell = html_writer::tag('td', get_string('groupdoesntexist', 'groupmanagement'), array('colspan' => $colspan));
-                $html .= html_writer::tag('tr', $cell);
-                break;
-            }
-            $html .= html_writer::start_tag('tr', array('class'=>'option'));
-            $html .= html_writer::start_tag('td', array());
 
-            if ($multipleenrollmentspossible == 1) {
-                $option->attributes->name = 'answer_'.$i;
-                $option->attributes->type = 'checkbox';
-                $answer_to_groupid_mappings .= '<input type="hidden" name="answer_'.$i.'_groupid" value="'.$option->groupid.'">';
-                $option->attributes->onchange = 'if ($("#enrollementKeyKey" + this.value).css("display") == "none" && $(this).is(":checked")) {
+            $group = (isset($groupmanagement_groups[$option->groupid])) ? ($groupmanagement_groups[$option->groupid]) : (false);
+
+            if (strpos($group->name, "#HiddenGroup") !== false) {
+
+                // Do Nothing
+
+            } else {
+
+                if (!$group) {
+                    $colspan = 2;
+                    if ($showresults == GROUPMANAGEMENT_SHOWRESULTS_ALWAYS or ($showresults == GROUPMANAGEMENT_SHOWRESULTS_AFTER_ANSWER and $current) or ($showresults == GROUPMANAGEMENT_SHOWRESULTS_AFTER_CLOSE and !$groupmanagementopen)) {
+                        $colspan++;
+                        if ($publish == GROUPMANAGEMENT_PUBLISH_NAMES) {
+                            $colspan++;
+                        }
+                    }
+                    $cell = html_writer::tag('td', get_string('groupdoesntexist', 'groupmanagement'), array('colspan' => $colspan));
+                    $html .= html_writer::tag('tr', $cell);
+                    break;
+                }
+                $html .= html_writer::start_tag('tr', array('class' => 'option'));
+                $html .= html_writer::start_tag('td', array());
+
+                if ($multipleenrollmentspossible == 1) {
+                    $option->attributes->name = 'answer_' . $i;
+                    $option->attributes->type = 'checkbox';
+                    $answer_to_groupid_mappings .= '<input type="hidden" name="answer_' . $i . '_groupid" value="' . $option->groupid . '">';
+                    $option->attributes->onchange = 'if ($("#enrollementKeyKey" + this.value).css("display") == "none" && $(this).is(":checked")) {
                                                     $("#enrollementKeyKey" + this.value).show();
                                                     $("#enrollementKeyLabel" + this.value).show();
                                                  } else {
                                                     $("#enrollementKeyKey" + this.value).hide();
                                                     $("#enrollementKeyLabel" + this.value).hide();
                                                  }';
-                $i++;
-            } else {
-                $option->attributes->name = 'answer';
-                $option->attributes->type = 'radio';
-                $option->attributes->onchange = '$(".enrollementKey").hide();
+                    $i++;
+                } else {
+                    $option->attributes->name = 'answer';
+                    $option->attributes->type = 'radio';
+                    $option->attributes->onchange = '$(".enrollementKey").hide();
                                                  $("#enrollementKeyKey" + this.value).show();
                                                  $("#enrollementKeyLabel" + this.value).show();';
-                if (array_key_exists('attributes', $option) && array_key_exists('checked', $option->attributes) && $option->attributes->checked == true) {
-                    $initiallyHideSubmitButton = true;
+                    if (array_key_exists('attributes', $option) && array_key_exists('checked', $option->attributes) && $option->attributes->checked == true) {
+                        $initiallyHideSubmitButton = true;
+                    }
                 }
-            }
 
-            $group_title = "";
+                $group_title = "";
 
-            if($groupmanagement->displaygrouppicture == 1) {
-                $group_title .= print_group_picture($group, $course->id, false, true).' '; // Affichage de l'image du groupe !
-            }
+                if ($groupmanagement->displaygrouppicture == 1) {
+                    $group_title .= print_group_picture($group, $course->id, false, true) . ' '; // Affichage de l'image du groupe !
+                }
 
-            $group_title .= '<b>'.$group->name.'</b>';
+                $group_title .= '<b>' . $group->name . '</b>';
 
-            $labeltext = html_writer::tag('label', $group_title, array('for' => 'choiceid_' . $option->attributes->value));
 
-            $group_members = $DB->get_records_sql('SELECT {user}.id, CONCAT_WS(", ", {user}.lastname, {user}.firstname) AS fullname 
+                $labeltext = html_writer::tag('label', $group_title, array('for' => 'choiceid_' . $option->attributes->value));
+
+                $group_members = $DB->get_records_sql('SELECT {user}.id, CONCAT_WS(", ", {user}.lastname, {user}.firstname) AS fullname
                                                    FROM {user}
                                                    RIGHT OUTER JOIN {groups_members} ON {user}.id = {groups_members}.userid 
                                                    WHERE groupid = ? 
                                                    ORDER BY fullname ASC', array($group->id));
 
-            if (!empty($option->attributes->disabled) || ($limitmaxusersingroups && sizeof($group_members) >= $option->maxanswers)) {
-                $labeltext .= ' ' . html_writer::tag('em', get_string('full', 'groupmanagement'));
-                $option->attributes->disabled=true;
-                $availableoption--;
-            }
-
-            if ($groupmanagement->freezegroups == 1 || (!empty($groupmanagement->freezegroupsaftertime) && time() >= $groupmanagement->freezegroupsaftertime)) {
-                $option->attributes->disabled=true;
-            }
-
-            $group_description = $group->description;
-
-            $labeltext .= html_writer::tag('div', $group_description, array('class' => 'groupmanagements-descriptions hidden'));
-
-            if($groupmanagement->displaygroupvideo == 1) {
-                if(isset($option->groupvideo)) {
-                    $videoEmbed = $option->groupvideo ; // Create and add iframe
-                    $labeltext .= html_writer::tag('div', $videoEmbed, array('class' => 'groupmanagements-descriptions hidden'));
-                }
-            }
-            
-            if ($disabled) {
-                $option->attributes->disabled=true;
-            }
-            $attributes = (array) $option->attributes;
-            $attributes['id'] = 'choiceid_' . $option->attributes->value;
-            $html .= html_writer::empty_tag('input', $attributes);
-            $html .= html_writer::end_tag('td');
-            $html .= html_writer::tag('td', $labeltext, array('for'=>$option->attributes->name));
-
-            if ( $showresults == GROUPMANAGEMENT_SHOWRESULTS_ALWAYS or
-            ($showresults == GROUPMANAGEMENT_SHOWRESULTS_AFTER_ANSWER and $current) or
-            ($showresults == GROUPMANAGEMENT_SHOWRESULTS_AFTER_CLOSE and !$groupmanagementopen)) {
-
-                $maxanswers = ($limitmaxusersingroups) ? (' / '.$option->maxanswers) : ('');
-                $html .= html_writer::tag('td', sizeof($group_members).$maxanswers, array('class' => 'center'));
-
-                if (!empty($groupmanagement->privategroupspossible) && $groupmanagement->privategroupspossible == 1) {
-                    $privateImage = '';
-                    if (isset($option->enrollementkey)) {
-                        $privateImage = '<img src="'.$this->output->pix_url('t/locked').'" alt="'.get_string('private', 'groupmanagement').'" />';
-                        $private_groups_id[] = $option->attributes->value;
-                    }
-                    $html .= html_writer::tag('td', $privateImage, array('class' => 'center'));
-                }
-                
-                $group_creator_links = '-';
-                if (isset($option->creatorid)) {
-                    $group_creator = $DB->get_record('user', array('id' => $option->creatorid));
-                    if (isset($group_creator)) {
-                        $url = new moodle_url('/message/index.php', array('id'=>$option->creatorid, 'course'=>$course->id));
-                        $creatorImage = '<img src="'.$this->output->pix_url('t/email').'" alt="'.get_string('contact', 'groupmanagement').'" />';
-                        $group_creator_links = html_writer::link($url, $creatorImage);
-
-                        $group_creator_links .= ' ';
-
-                        $url = new moodle_url('/user/view.php', array('id'=>$option->creatorid, 'course'=>$course->id));
-                        $group_creator_name = $group_creator->lastname.', '.$group_creator->firstname;
-                        $group_creator_links .= html_writer::link($url, $group_creator_name);
-                    }
-                }
-                $html .= html_writer::tag('td', $group_creator_links, array('class' => 'center'));
-
-                if ($publish == GROUPMANAGEMENT_PUBLISH_NAMES) {
-                    $group_member_html = '';
-                    foreach ($group_members as $group_member) {
-                        $url = new moodle_url('/user/view.php', array('id'=>$group_member->id, 'course'=>$course->id));
-                        $group_member_link = html_writer::link($url, $group_member->fullname.'<br />');
-                        $group_member_html .= html_writer::tag('div', $group_member_link, array('class' => 'groupmanagements-membersnames hidden', 'id' => 'groupmanagement_'.$option->attributes->value));
-                    }
-                    if (empty($group_member_html)) {
-                        $group_member_html = html_writer::tag('div', '-', array('class' => 'groupmanagements-membersnames hidden', 'id' => 'groupmanagement_'.$option->attributes->value));
-                    }
-                    $html .= html_writer::tag('td', $group_member_html, array('class' => 'center'));
+                if (!empty($option->attributes->disabled) || ($limitmaxusersingroups && sizeof($group_members) >= $option->maxanswers)) {
+                    $labeltext .= ' ' . html_writer::tag('em', get_string('full', 'groupmanagement'));
+                    $option->attributes->disabled = true;
+                    $availableoption--;
                 }
 
-                $actionLinks = '';
-                $hasManageGroupsCapability = has_capability('mod/groupmanagement:managegroups', $context);
-                if ($hasManageGroupsCapability || (isset($option->creatorid) && $option->creatorid == $USER->id)) {
-                    if ($groupmanagement->freezegroups == 0 && (empty($groupmanagement->freezegroupsaftertime) || time() < $groupmanagement->freezegroupsaftertime)) {
-                        $url = new moodle_url('/mod/groupmanagement/group/group.php', array('id'=>$option->groupid, 'courseid'=>$course->id, 'cgid'=>$groupmanagement->id, 'cmid'=>$coursemoduleid));
-                        $editImage = '<img src="'.$this->output->pix_url('t/edit').'" alt="'.get_string('edit', 'moodle').'" />';
-                        $actionLinks .= html_writer::link($url, $editImage);
+                if ($groupmanagement->freezegroups == 1 || (!empty($groupmanagement->freezegroupsaftertime) && time() >= $groupmanagement->freezegroupsaftertime)) {
+                    $option->attributes->disabled = true;
+                }
 
-                        $actionLinks .= '&nbsp;&nbsp;';
+                $group_description = $group->description;
 
-                        if(!$disableDeletion) {
-                            $url = new moodle_url('/mod/groupmanagement/group/delete.php', array('groups'=>$option->groupid, 'courseid'=>$course->id, 'cmid'=>$coursemoduleid));
-                            $deleteImage = '<img src="'.$this->output->pix_url('t/delete').'" alt="'.get_string('delete', 'moodle').'" />';
-                            $actionLinks .= html_writer::link($url, $deleteImage);
+                $labeltext .= html_writer::tag('div', $group_description, array('class' => 'groupmanagements-descriptions hidden'));
+
+                if ($groupmanagement->displaygroupvideo == 1) {
+                    if (isset($option->groupvideo)) {
+                        $videoEmbed = $option->groupvideo; // Create and add iframe
+                        $labeltext .= html_writer::tag('div', $videoEmbed, array('class' => 'groupmanagements-descriptions hidden'));
+                    }
+                }
+
+                if ($disabled) {
+                    $option->attributes->disabled = true;
+                }
+                $attributes = (array)$option->attributes;
+                $attributes['id'] = 'choiceid_' . $option->attributes->value;
+                $html .= html_writer::empty_tag('input', $attributes);
+                $html .= html_writer::end_tag('td');
+                $html .= html_writer::tag('td', $labeltext, array('for' => $option->attributes->name));
+
+                if ($showresults == GROUPMANAGEMENT_SHOWRESULTS_ALWAYS or
+                    ($showresults == GROUPMANAGEMENT_SHOWRESULTS_AFTER_ANSWER and $current) or
+                    ($showresults == GROUPMANAGEMENT_SHOWRESULTS_AFTER_CLOSE and !$groupmanagementopen)
+                ) {
+
+                    $maxanswers = ($limitmaxusersingroups) ? (' / ' . $option->maxanswers) : ('');
+                    $html .= html_writer::tag('td', sizeof($group_members) . $maxanswers, array('class' => 'center'));
+
+                    if (!empty($groupmanagement->privategroupspossible) && $groupmanagement->privategroupspossible == 1) {
+                        $privateImage = '';
+                        if (isset($option->enrollementkey)) {
+                            $privateImage = '<img src="' . $this->output->pix_url('t/locked') . '" alt="' . get_string('private', 'groupmanagement') . '" />';
+                            $private_groups_id[] = $option->attributes->value;
+                        }
+                        $html .= html_writer::tag('td', $privateImage, array('class' => 'center'));
+                    }
+
+                    $group_creator_links = '-';
+                    if (isset($option->creatorid)) {
+                        $group_creator = $DB->get_record('user', array('id' => $option->creatorid));
+                        if (isset($group_creator)) {
+                            $url = new moodle_url('/message/index.php', array('id' => $option->creatorid, 'course' => $course->id));
+                            $creatorImage = '<img src="' . $this->output->pix_url('t/email') . '" alt="' . get_string('contact', 'groupmanagement') . '" />';
+                            $group_creator_links = html_writer::link($url, $creatorImage);
+
+                            $group_creator_links .= ' ';
+
+                            $url = new moodle_url('/user/view.php', array('id' => $option->creatorid, 'course' => $course->id));
+                            $group_creator_name = $group_creator->lastname . ', ' . $group_creator->firstname;
+                            $group_creator_links .= html_writer::link($url, $group_creator_name);
                         }
                     }
+                    $html .= html_writer::tag('td', $group_creator_links, array('class' => 'center'));
+
+                    if ($publish == GROUPMANAGEMENT_PUBLISH_NAMES) {
+                        $group_member_html = '';
+                        foreach ($group_members as $group_member) {
+                            $url = new moodle_url('/user/view.php', array('id' => $group_member->id, 'course' => $course->id));
+                            $group_member_link = html_writer::link($url, $group_member->fullname . '<br />');
+                            $group_member_html .= html_writer::tag('div', $group_member_link, array('class' => 'groupmanagements-membersnames hidden', 'id' => 'groupmanagement_' . $option->attributes->value));
+                        }
+                        if (empty($group_member_html)) {
+                            $group_member_html = html_writer::tag('div', '-', array('class' => 'groupmanagements-membersnames hidden', 'id' => 'groupmanagement_' . $option->attributes->value));
+                        }
+                        $html .= html_writer::tag('td', $group_member_html, array('class' => 'center'));
+                    }
+
+                    $actionLinks = '';
+                    $hasManageGroupsCapability = has_capability('mod/groupmanagement:managegroups', $context);
+                    if ($hasManageGroupsCapability || (isset($option->creatorid) && $option->creatorid == $USER->id)) {
+                        if ($groupmanagement->freezegroups == 0 && (empty($groupmanagement->freezegroupsaftertime) || time() < $groupmanagement->freezegroupsaftertime)) {
+                            $url = new moodle_url('/mod/groupmanagement/group/group.php', array('id' => $option->groupid, 'courseid' => $course->id, 'cgid' => $groupmanagement->id, 'cmid' => $coursemoduleid));
+                            $editImage = '<img src="' . $this->output->pix_url('t/edit') . '" alt="' . get_string('edit', 'moodle') . '" />';
+                            $actionLinks .= html_writer::link($url, $editImage);
+
+                            $actionLinks .= '&nbsp;&nbsp;';
+
+                            if (!$disableDeletion) {
+                                $url = new moodle_url('/mod/groupmanagement/group/delete.php', array('groups' => $option->groupid, 'courseid' => $course->id, 'cmid' => $coursemoduleid));
+                                $deleteImage = '<img src="' . $this->output->pix_url('t/delete') . '" alt="' . get_string('delete', 'moodle') . '" />';
+                                $actionLinks .= html_writer::link($url, $deleteImage);
+                            }
+                        }
+                    }
+                    $html .= html_writer::tag('td', $actionLinks, array('class' => 'center'));
                 }
-                $html .= html_writer::tag('td', $actionLinks, array('class' => 'center'));
+                $html .= html_writer::end_tag('tr');
             }
-            $html .= html_writer::end_tag('tr');
         }
         $html .= html_writer::end_tag('table');
+
+
+
         if ($multipleenrollmentspossible == 1) {
-            $html .= '<input type="hidden" name="number_of_groups" value="'.$i.'">' . $answer_to_groupid_mappings;
+            $html .= '<input type="hidden" name="number_of_groups" value="' . $i . '">' . $answer_to_groupid_mappings;
         }
-        $html .= html_writer::tag('div', '', array('class'=>'clearfloat'));
-        $html .= html_writer::empty_tag('input', array('type'=>'hidden', 'name'=>'sesskey', 'value'=>sesskey()));
-        $html .= html_writer::empty_tag('input', array('type'=>'hidden', 'name'=>'id', 'value'=>$coursemoduleid));
+        $html .= html_writer::tag('div', '', array('class' => 'clearfloat'));
+        $html .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()));
+        $html .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'id', 'value' => $coursemoduleid));
 
         if (!empty($options['hascapability']) && ($options['hascapability'])) {
             if ($availableoption < 1) {
-               $html .= html_writer::tag('div', get_string('groupmanagementfull', 'groupmanagement'));
+                $html .= html_writer::tag('div', get_string('groupmanagementfull', 'groupmanagement'));
             } else {
                 if (!$disabled) {
                     foreach ($private_groups_id as $private_group_id) {
-                        $groupmanagement_option = $DB->get_record('groupmanagement_options', array('id'=>$private_group_id));
+                        $groupmanagement_option = $DB->get_record('groupmanagement_options', array('id' => $private_group_id));
                         $groupName = $groupmanagement_groups[$groupmanagement_option->groupid]->name;
-                        $labelText = '<b>'.get_string('enrollementKeyForgroupmanagement', 'groupmanagement').' '.$groupName.'</b><br />';
-                        
+                        $labelText = '<b>' . get_string('enrollementKeyForgroupmanagement', 'groupmanagement') . ' ' . $groupName . '</b><br />';
+
                         if (!empty($groupmanagement_option->creatorid)) {
                             $group_creator_links = '';
                             $group_creator = $DB->get_record('user', array('id' => $groupmanagement_option->creatorid));
                             if (isset($group_creator)) {
-                                $url = new moodle_url('/message/index.php', array('id'=>$option->creatorid, 'course'=>$course->id));
-                                $group_creator_name = $group_creator->firstname.' '.$group_creator->lastname;
+                                $url = new moodle_url('/message/index.php', array('id' => $option->creatorid, 'course' => $course->id));
+                                $group_creator_name = $group_creator->firstname . ' ' . $group_creator->lastname;
                                 $group_creator_links .= html_writer::link($url, $group_creator_name);
                             }
 
-                            $labelText .= get_string('requestEnrollementKeyFrom', 'groupmanagement').' '.$group_creator_links.'<br />';    
+                            $labelText .= get_string('requestEnrollementKeyFrom', 'groupmanagement') . ' ' . $group_creator_links . '<br />';
                         }
 
-                        $html .= html_writer::tag('label', $labelText, array('for'=>'enrollementKeyKey'.$private_group_id, 'id'=>'enrollementKeyLabel'.$private_group_id, 'class'=>'enrollementKey', 'style'=>'display: none;'));
-                        $html .= html_writer::empty_tag('input', array('type'=>'password', 'name'=>'enrollementKeyKey'.$private_group_id, 'id'=>'enrollementKeyKey'.$private_group_id, 'class'=>'enrollementKey', 'style'=>'display: none;'));
+                        $html .= html_writer::tag('label', $labelText, array('for' => 'enrollementKeyKey' . $private_group_id, 'id' => 'enrollementKeyLabel' . $private_group_id, 'class' => 'enrollementKey', 'style' => 'display: none;'));
+                        $html .= html_writer::empty_tag('input', array('type' => 'password', 'name' => 'enrollementKeyKey' . $private_group_id, 'id' => 'enrollementKeyKey' . $private_group_id, 'class' => 'enrollementKey', 'style' => 'display: none;'));
                     }
                     if ($groupmanagement->freezegroups == 0 && (empty($groupmanagement->freezegroupsaftertime) || time() < $groupmanagement->freezegroupsaftertime)) {
-                        $html .= html_writer::empty_tag('input', array('type'=>'submit', 'value'=>get_string('savemygroupmanagement','groupmanagement'), 'class'=>'button', 'style' => $initiallyHideSubmitButton?'display: none':''));
+                        $html .= html_writer::empty_tag('input', array('type' => 'submit', 'value' => get_string('savemygroupmanagement', 'groupmanagement'), 'class' => 'button', 'style' => $initiallyHideSubmitButton ? 'display: none' : ''));
                     }
                 }
             }
 
             if (!empty($options['allowupdate']) && ($options['allowupdate']) && !($multipleenrollmentspossible == 1)) {
                 if ($groupmanagement->freezegroups == 0 && (empty($groupmanagement->freezegroupsaftertime) || time() < $groupmanagement->freezegroupsaftertime)) {
-                    $url = new moodle_url('view.php', array('id'=>$coursemoduleid, 'action'=>'delgroupmanagement', 'sesskey'=>sesskey()));
+                    $url = new moodle_url('view.php', array('id' => $coursemoduleid, 'action' => 'delgroupmanagement', 'sesskey' => sesskey()));
 
-                    $html .= ' '.html_writer::empty_tag('input', array('type'=>'button', 'value'=>get_string('removemygroupmanagement','groupmanagement'), 'class'=>'button', 'onclick'=>'window.location="'.html_entity_decode($url).'"'));
+                    $html .= ' ' . html_writer::empty_tag('input', array('type' => 'button', 'value' => get_string('removemygroupmanagement', 'groupmanagement'), 'class' => 'button', 'onclick' => 'window.location="' . html_entity_decode($url) . '"'));
 
                 }
             }
@@ -302,21 +318,20 @@ class mod_groupmanagement_renderer extends plugin_renderer_base {
             $html .= html_writer::tag('div', get_string('havetologin', 'groupmanagement'));
         }
         // Check if can create group
-        if ($groupmanagement->groupcreationpossible == 1) {    
+        if ($groupmanagement->groupcreationpossible == 1) {
             if ($groupmanagement->freezegroups == 0 && (empty($groupmanagement->freezegroupsaftertime) || time() < $groupmanagement->freezegroupsaftertime)) {
                 if ($groupmanagement->limitmaxgroups == 0 || count($options['options']) < $groupmanagement->maxgroups) {
-                    $url = new moodle_url('/mod/groupmanagement/group/group.php', array('cgid'=>$groupmanagement->id, 'cmid'=>$coursemoduleid, 'courseid'=>$course->id));
-                    $html .= '<br/>'.html_writer::empty_tag('input', array('type'=>'button', 'value'=>get_string('creategroup','groupmanagement'), 'class'=>'button', 'onclick'=>'window.location="'.html_entity_decode($url).'"'));
+                    $url = new moodle_url('/mod/groupmanagement/group/group.php', array('cgid' => $groupmanagement->id, 'cmid' => $coursemoduleid, 'courseid' => $course->id));
+                    $html .= '<br/>' . html_writer::empty_tag('input', array('type' => 'button', 'value' => get_string('creategroup', 'groupmanagement'), 'class' => 'button', 'onclick' => 'window.location="' . html_entity_decode($url) . '"'));
                 }
             }
-        }
-        else {
-    // If not, check if is a teacher, non editing teacher or admin and let create group
-            if (has_capability('mod/groupmanagement:managegroups',$context)) {
+        } else {
+            // If not, check if is a teacher, non editing teacher or admin and let create group
+            if (has_capability('mod/groupmanagement:managegroups', $context)) {
                 if ($groupmanagement->freezegroups == 0 && (empty($groupmanagement->freezegroupsaftertime) || time() < $groupmanagement->freezegroupsaftertime)) {
                     if ($groupmanagement->limitmaxgroups == 0 || count($options['options']) < $groupmanagement->maxgroups) {
-                        $url = new moodle_url('/mod/groupmanagement/group/group.php', array('cgid'=>$groupmanagement->id, 'cmid'=>$coursemoduleid, 'courseid'=>$course->id));
-                        $html .= '<br/>'.html_writer::empty_tag('input', array('type'=>'button', 'value'=>get_string('creategroup','groupmanagement'), 'class'=>'button', 'onclick'=>'window.location="'.html_entity_decode($url).'"'));
+                        $url = new moodle_url('/mod/groupmanagement/group/group.php', array('cgid' => $groupmanagement->id, 'cmid' => $coursemoduleid, 'courseid' => $course->id));
+                        $html .= '<br/>' . html_writer::empty_tag('input', array('type' => 'button', 'value' => get_string('creategroup', 'groupmanagement'), 'class' => 'button', 'onclick' => 'window.location="' . html_entity_decode($url) . '"'));
                     }
                 }
             }
@@ -326,6 +341,7 @@ class mod_groupmanagement_renderer extends plugin_renderer_base {
         $html .= html_writer::end_tag('form');
 
         return $html;
+
     }
 
     /**
@@ -505,15 +521,15 @@ class mod_groupmanagement_renderer extends plugin_renderer_base {
             $numberofuser = 0;
             $graphcell = new html_table_cell();
             if (!empty($options->user)) {
-               $numberofuser = count($options->user);
+                $numberofuser = count($options->user);
             }
 
             $width = 0;
             $percentageamount = 0;
             $columndata = '';
             if($groupmanagements->numberofuser > 0) {
-               $width = ($GROUPMANAGEMENT_COLUMN_WIDTH * ((float)$numberofuser / (float)$groupmanagements->numberofuser));
-               $percentageamount = ((float)$numberofuser/(float)$groupmanagements->numberofuser)*100.0;
+                $width = ($GROUPMANAGEMENT_COLUMN_WIDTH * ((float)$numberofuser / (float)$groupmanagements->numberofuser));
+                $percentageamount = ((float)$numberofuser/(float)$groupmanagements->numberofuser)*100.0;
             }
             $displaydiagram = html_writer::tag('img','', array('style'=>'height:50px; width:'.$width.'px', 'alt'=>'', 'src'=>$this->output->pix_url('row', 'groupmanagement')));
 
@@ -532,7 +548,7 @@ class mod_groupmanagement_renderer extends plugin_renderer_base {
             $columndata .= html_writer::tag('div', ' ('.$numberofuser.')', array('title'=> get_string('numberofuser', 'groupmanagement'), 'class'=>'numberofuser'));
 
             if($groupmanagements->numberofuser > 0) {
-               $percentageamount = ((float)$numberofuser/(float)$groupmanagements->numberofuser)*100.0;
+                $percentageamount = ((float)$numberofuser/(float)$groupmanagements->numberofuser)*100.0;
             }
             $columndata .= html_writer::tag('div', format_float($percentageamount,1). '%', array('class'=>'percentage'));
 
