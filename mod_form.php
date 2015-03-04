@@ -59,7 +59,7 @@ class mod_groupmanagement_mod_form extends moodleform_mod {
         while ($groupsToCreate > 0) {
             $data = new stdClass();
             $data->courseid = $COURSE->id;
-            $data->name = '#HiddenGroup '.$groupsToCreate;
+            $data->name = '#DefaultGroup '.$groupsToCreate;
             groups_create_group($data);
             $groupsToCreate--;
         }
@@ -163,7 +163,7 @@ class mod_groupmanagement_mod_form extends moodleform_mod {
         }
         foreach ($groups as $group) {
             if ($group->mentioned === false) { // Ajout des groupes dans le système
-                if(strpos($group->name, "#HiddenGroup")!==false) {
+                if(strpos($group->name, "#DefaultGroup")!==false) {
                     $mform->addElement('html', '<option value="' . $group->id . '" style="display:none; class="group toplevel">' . $group->name . '</option>');
                 }else {
                     $mform->addElement('html', '<option value="' . $group->id . '" class="group toplevel">' . $group->name . '</option>');
@@ -179,7 +179,7 @@ class mod_groupmanagement_mod_form extends moodleform_mod {
         if (!isset($this->_instance) || empty($this->_instance)) {
             foreach ($groups as $group) {
                 if ($group->mentioned === false) {
-                    if(strpos($group->name, "#HiddenGroup")!==false) {
+                    if(strpos($group->name, "#DefaultGroup")!==false) {
                         $mform->addElement('html', '<option value="' . $group->id . '" style="display:none; class="group toplevel">' . $group->name .  '</option>');
                     }else {
                         //$mform->addElement('html', '<option value="' . $group->id . '" class="group toplevel">' . $group->name . '</option>');

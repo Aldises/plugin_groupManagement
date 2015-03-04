@@ -104,7 +104,7 @@ class mod_groupmanagement_renderer extends plugin_renderer_base {
 
             $group = (isset($groupmanagement_groups[$option->groupid])) ? ($groupmanagement_groups[$option->groupid]) : (false);
 
-            if (strpos($group->name, "#HiddenGroup") !== false) {
+            if (strpos($group->name, "#DefaultGroup") !== false) {
 
                 // Do Nothing
 
